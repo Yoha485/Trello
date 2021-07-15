@@ -1,6 +1,8 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { AbstractEntity } from './abstract-entity';
 import { ColumnEntity } from './column.entity';
+import { CommentEntity } from './comment.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('cards')
 export class CardEntity extends AbstractEntity {
@@ -10,6 +12,16 @@ export class CardEntity extends AbstractEntity {
   @Column()
   description: string;
 
-  @ManyToOne((type) => ColumnEntity, (column) => column.cards)
+  @OneToMany(type => CommentEntity, comment => comment.card)
+  comments: CommentEntity[];
+
+  @ManyToOne((type) => ColumnEntity, (column) => column.cards, {
+    onDelete: 'CASCADE',
+  })
   column: ColumnEntity;
+
+  @ManyToOne((type) => UserEntity, (user) => user.cards, {
+    onDelete: 'CASCADE',
+  })
+  user: UserEntity;
 }

@@ -8,7 +8,7 @@ export class ColumnEntity extends AbstractEntity {
   @Column()
   name: string;
 
-  @ManyToOne((type) => UserEntity, (user) => user.columns)
+  @ManyToOne((type) => UserEntity, (user) => user.columns, {onDelete: 'CASCADE'})
   user: UserEntity;
 
   @OneToMany((type) => CardEntity, (card) => card.column)

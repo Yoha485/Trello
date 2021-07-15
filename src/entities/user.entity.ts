@@ -3,6 +3,8 @@ import { ColumnEntity } from './column.entity';
 import { AbstractEntity } from './abstract-entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
+import { CardEntity } from './card.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -18,6 +20,12 @@ export class UserEntity extends AbstractEntity {
 
   @OneToMany((type) => ColumnEntity, (column) => column.user)
   columns: ColumnEntity[];
+
+  @OneToMany((type) => CardEntity, (card) => card.user)
+  cards: CardEntity[];
+
+  @OneToMany(type => CommentEntity, comment => comment.user)
+  comments: CommentEntity[];
 
   @BeforeInsert()
   async hashPassword() {
