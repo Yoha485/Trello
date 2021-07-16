@@ -12,7 +12,7 @@ export class UserService {
   ) {}
 
   async findByUsername(username: string) {
-    let user = await this.userRepository.findOne({ where: { username } });
+    const user = await this.userRepository.findOne({ where: { username } });
     return user.toJson();
   }
 
