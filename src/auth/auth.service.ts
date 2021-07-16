@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/entities/user.entity';
-import { RegisterDto, LoginDto } from 'src/model/user.model';
+import { UserEntity } from 'src/user/user.entity';
+import { RegisterDto, LoginDto } from 'src/user/user.dto';
 import { Repository } from 'typeorm';
-
+import * as bcrypt from 'bcryptjs'
 @Injectable()
 export class AuthService {
   constructor(
@@ -20,9 +20,10 @@ export class AuthService {
 
   async register(credentials: RegisterDto) {
     try {
-      const user = this.userRepository.create(credentials);
+      const user = this.userRepository.create({...credentials, password:
+        bcrypt.hashSync(credentials.password,10)});
       await user.save();
-      const payload = { username: user.username };
+      const payload = { id: user.id };
       const token = this.jwtService.sign(payload);
       return { user: { ...user.toJson(), token } };
     } catch (err) {
@@ -40,7 +41,7 @@ export class AuthService {
       if (!isValid) {
         throw new UnauthorizedException('Invalid credentials');
       }
-      const payload = { username: user.username };
+      const payload = { id : user.id };
       const token = this.jwtService.sign(payload);
       return { user: { ...user.toJson(), token } };
     } catch (err) {

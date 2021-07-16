@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { AbstractEntity } from './abstract-entity';
-import { CardEntity } from './card.entity';
-import { UserEntity } from './user.entity';
+import { AbstractEntity } from '../common/abstract-entity';
+import { CardEntity } from '../cards/card.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity('comments')
 export class CommentEntity extends AbstractEntity {

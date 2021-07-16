@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ColumnEntity } from 'src/entities/column.entity';
-import { UserEntity } from 'src/entities/user.entity';
-import { createColumnDto } from 'src/model/column.model';
+import { ColumnEntity } from 'src/column/column.entity';
+import { UserEntity } from 'src/user/user.entity';
+import { createColumnDto } from 'src/dto/column.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -30,17 +30,13 @@ export class ColumnService {
 
   async findById(id: string) {
     try {
-      return await this.columnRepository.findOne({ where: { id } });
+      return this.columnRepository.findOneOrFail({ where: { id } });
     } catch (err) {
       throw new InternalServerErrorException();
     }
   }
 
   async findAll() {
-    try {
-      return this.columnRepository.find();
-    } catch (err) {
-      throw new InternalServerErrorException();
-    }
+    return this.columnRepository.find();
   }
 }

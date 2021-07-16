@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "src/auth/auth.module";
-import { ColumnEntity } from "src/entities/column.entity";
-import { UserEntity } from "src/entities/user.entity";
-import { ColumnController } from "./columl.controller";
+import { ColumnEntity } from "src/column/column.entity";
+import { UserEntity } from "src/user/user.entity";
+import { ColumnController } from "./column.controller";
 import { ColumnService } from "./column.service";
 
 

@@ -4,6 +4,8 @@ import { AuthModule } from './auth/auth.module';
 import { ColumnModule } from './column/column.module';
 import { DatabaseConnectionService } from './database-connection.service';
 import { UserModule } from './user/user.module';
+import { CardModule } from './cards/cards.module'
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -13,6 +15,9 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     ColumnModule,
+    CardModule,
+    CardModule,
+    CommentsModule,
   ],
   controllers: [],
   providers: [],

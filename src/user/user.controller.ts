@@ -1,23 +1,27 @@
-import { Body, Controller, Get, Put, UseGuards, ValidationPipe } from '@nestjs/common';
-import { User } from 'src/auth/user.decorator';
-import { UserEntity } from 'src/entities/user.entity';
+import { Body, Controller, Delete, Get, Patch, UseGuards, ValidationPipe } from '@nestjs/common';
+import { User } from 'src/user/user.decorator';
+import { UserEntity } from 'src/user/user.entity';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { UpdateUserDto } from 'src/model/user.model';
+import { UpdateUserDto } from 'src/user/user.dto';
 
+@UseGuards(AuthGuard())
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  @UseGuards(AuthGuard())
-  findCurrentUser(@User() { username }: UserEntity) {
-    return this.userService.findByUsername(username);
+  findCurrentUser(@User('id') id  : number) {
+    return this.userService.findById(id);
   }
 
-  @Put()
-  @UseGuards(AuthGuard())
-  update(@User() { username }: UserEntity, @Body(ValidationPipe) data: UpdateUserDto) {
-    return this.userService.updateUser(username, data);
+  @Patch()
+  update(@User('id')  userId : number, @Body() data: UpdateUserDto) {
+    return this.userService.updateUser(userId, data);
+  }
+
+  @Delete()
+  delete(@User('id') userId: number){
+    return this.userService.deleteUser(userId);
   }
 }

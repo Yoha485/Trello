@@ -1,25 +1,23 @@
-import { BadRequestException, ExecutionContext } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  BadRequestException,
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ColumnService } from './column.service';
 
-export class ColumnAuthGuard extends AuthGuard('jwt') {
-  constructor(private columnService: ColumnService) {
-    super();
-  }
+@Injectable()
+export class ColumnAuthGuard implements CanActivate {
+  constructor(private readonly columnService: ColumnService) {}
 
-  // canActivate(context: ExecutionContext) {
-  //   const request = context.switchToHttp().getRequest();
-  //   console.log(request.params);
-  //   return true;
-  // }
-
-  handleRequest(err, user, info, context) {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    this.columnService.findById(request.params.id).then((column) => {
-      if (column.id !== user.id) {
-        throw new BadRequestException();
-      }
-    });;
-    return user;
+    const { user } = request;
+    const column = await this.columnService.findById(request.params.id);
+    if(!column){
+      throw new NotFoundException();
+    }
+    return column.userId === user.id;
   }
 }

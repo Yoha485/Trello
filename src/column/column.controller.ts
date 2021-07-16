@@ -8,18 +8,18 @@ import {
   Param,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from 'src/auth/user.decorator';
-import { UserEntity } from 'src/entities/user.entity';
-import { createColumnDto } from 'src/model/column.model';
+import { User } from 'src/user/user.decorator';
+import { UserEntity } from 'src/user/user.entity';
+import { createColumnDto } from 'src/dto/column.dto';
 import { ColumnAuthGuard } from './column.guard';
 import { ColumnService } from './column.service';
 
+@UseGuards(AuthGuard())
 @Controller('columns')
 export class ColumnController {
   constructor(private columnService: ColumnService) {}
 
   @Post()
-  @UseGuards(AuthGuard())
   createColumn(
     @User() user: UserEntity,
     @Body(ValidationPipe) createColumnDto: createColumnDto,
@@ -29,7 +29,7 @@ export class ColumnController {
 
   @Get(':id')
   @UseGuards(ColumnAuthGuard)
-  getColumnById(@Param('id') id: string, @User() user: UserEntity) {
-    return 'done';
+  getColumnById(@Param('id') id: string) {
+    return this.columnService.findById(id);
   }
 }

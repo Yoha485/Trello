@@ -1,19 +1,22 @@
 import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
-import { ColumnEntity } from './column.entity';
-import { AbstractEntity } from './abstract-entity';
+import { ColumnEntity } from '../column/column.entity';
+import { AbstractEntity } from '../common/abstract-entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
-import { CardEntity } from './card.entity';
-import { CommentEntity } from './comment.entity';
+import { CardEntity } from '../cards/card.entity';
+import { CommentEntity } from '../comments/comment.entity';
+import { IsDefined, IsEmail, MinLength } from 'class-validator';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
-  @Column()
+  @IsEmail()
+  @Column({ unique: true })
   email: string;
 
   @Column({ unique: true })
   username: string;
 
+  @MinLength(4)
   @Column()
   @Exclude()
   password: string;
@@ -24,16 +27,11 @@ export class UserEntity extends AbstractEntity {
   @OneToMany((type) => CardEntity, (card) => card.user)
   cards: CardEntity[];
 
-  @OneToMany(type => CommentEntity, comment => comment.user)
+  @OneToMany((type) => CommentEntity, (comment) => comment.user)
   comments: CommentEntity[];
 
-  @BeforeInsert()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-
-  async comparePassword(attempt: string) {
-    return await bcrypt.compare(attempt, this.password);
+  comparePassword(attempt: string) {
+    return  bcrypt.compareSync(attempt, this.password);
   }
 
   toJson() {

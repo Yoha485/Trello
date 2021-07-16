@@ -1,13 +1,12 @@
+import { PickType } from "@nestjs/swagger";
 import { IsEmail, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { UserEntity } from "./user.entity";
 
-export class LoginDto{
+export class LoginDto {
   @IsEmail()
-  @IsString()
-  @MinLength(4)
   email: string;
 
   @IsString()
-  @MinLength(4)
   password: string;
 }
 
@@ -22,15 +21,17 @@ export class RegisterDto extends LoginDto{
 export class UpdateUserDto{
   @IsEmail()
   @IsOptional()
-  email: string;
+  email?: string;
 
   @IsOptional() 
-  username: string;
+  @IsString()
+  username?: string;
 
   @IsOptional()
-  password: string;
+  @IsString()
+  password?: string;
 }
 
 export interface AuthPayload{
-  username: string;
+  id: number;
 }
