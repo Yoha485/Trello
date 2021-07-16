@@ -21,15 +21,15 @@ export class RegisterDto extends LoginDto{
 export class UpdateUserDto{
   @IsEmail()
   @IsOptional()
-  email?: string;
+  email: string;
 
   @IsOptional() 
   @IsString()
-  username?: string;
+  username: string;
 
   @IsOptional()
   @IsString()
-  password?: string;
+  password: string;
 }
 
 export interface AuthPayload{
