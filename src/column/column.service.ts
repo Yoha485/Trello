@@ -8,17 +8,20 @@ import { ColumnEntity } from 'src/column/column.entity';
 import { UserEntity } from 'src/user/user.entity';
 import { CreateColumnDto, UpdateColumnDto } from 'src/column/column.dto';
 import { Repository } from 'typeorm';
+import { ColumnRepository } from './column.repository';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class ColumnService {
   constructor(
-    @InjectRepository(ColumnEntity)
-    private columnRepository: Repository<ColumnEntity>,
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private readonly columnRepository: ColumnRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
-  async createColumn(userId: number, createColumnDto: CreateColumnDto): Promise<ColumnEntity> {
+  async createColumn(
+    userId: number,
+    createColumnDto: CreateColumnDto,
+  ): Promise<ColumnEntity> {
     try {
       const column = this.columnRepository.create({
         ...createColumnDto,
@@ -43,7 +46,10 @@ export class ColumnService {
     return this.columnRepository.find({ where: { userId } });
   }
 
-  async updateColumn(id: number, updateColumnDto: UpdateColumnDto): Promise<ColumnEntity> {
+  async updateColumn(
+    id: number,
+    updateColumnDto: UpdateColumnDto,
+  ): Promise<ColumnEntity> {
     try {
       const column = await this.columnRepository.findOneOrFail(id);
       return this.userRepository.save({ ...column, ...updateColumnDto });

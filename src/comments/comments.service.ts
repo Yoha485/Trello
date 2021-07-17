@@ -8,12 +8,12 @@ import {
   UpdateCommentDto,
 } from './comment.dto';
 import { CommentEntity } from './comment.entity';
+import { CommentRepository } from './comment.repository';
 
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectRepository(CommentEntity)
-    private commentRepository: Repository<CommentEntity>,
+    private readonly commentRepository: CommentRepository
   ) {}
 
   async createComment(

@@ -1,18 +1,22 @@
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCardDto, GetCardsDto, UpdateCardDto } from './card.dto';
 import { CardEntity } from './card.entity';
+import { CardRepository } from './card.repository';
 
 @Injectable()
 export class CardService {
-  constructor(
-    @InjectRepository(CardEntity)
-    private cardRepository: Repository<CardEntity>,
-  ) {}
+  constructor(private readonly cardRepository: CardRepository) {}
 
-  async createCard(userId: number, createCardDto: CreateCardDto): Promise<CardEntity> {
+  async createCard(
+    userId: number,
+    createCardDto: CreateCardDto,
+  ): Promise<CardEntity> {
     try {
       return await this.cardRepository.save({
         userId,
@@ -29,14 +33,17 @@ export class CardService {
   }
 
   async findCardById(id: number): Promise<CardEntity> {
-    try{
+    try {
       return this.cardRepository.findOne(id);
-    } catch(err){
+    } catch (err) {
       throw new NotFoundException();
     }
   }
 
-  async updateCard(id: number, updateCardDto: UpdateCardDto): Promise<CardEntity> {
+  async updateCard(
+    id: number,
+    updateCardDto: UpdateCardDto,
+  ): Promise<CardEntity> {
     try {
       const card = await this.cardRepository.findOneOrFail(id);
       return this.cardRepository.save({ ...card, ...updateCardDto });
