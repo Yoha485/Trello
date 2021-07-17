@@ -18,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(credentials: RegisterDto) {
+  async register(credentials: RegisterDto): Promise<any> {
     try {
       const user = this.userRepository.create({...credentials, password:
         bcrypt.hashSync(credentials.password,10)});
@@ -34,7 +34,7 @@ export class AuthService {
     }
   }
 
-  async login({ email, password }: LoginDto) {
+  async login({ email, password }: LoginDto): Promise<any> {
     try {
       const user = await this.userRepository.findOne({ where: { email } });
       const isValid = await user.comparePassword(password);

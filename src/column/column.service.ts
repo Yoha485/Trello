@@ -18,20 +18,20 @@ export class ColumnService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async createColumn(userId: number, createColumnDto: createColumnDto) {
+  async createColumn(userId: number, createColumnDto: createColumnDto): Promise<ColumnEntity> {
     try {
       const column = this.columnRepository.create({
         ...createColumnDto,
         userId,
       });
       await column.save();
-      return column.toJson();
+      return column;
     } catch (err) {
       throw new InternalServerErrorException();
     }
   }
 
-  async findColumnById(id: number) {
+  async findColumnById(id: number): Promise<ColumnEntity> {
     try {
       return this.columnRepository.findOneOrFail(id);
     } catch (err) {
@@ -39,15 +39,11 @@ export class ColumnService {
     }
   }
 
-  async findColumnsByUserId(userId: number) {
+  async findColumnsByUserId(userId: number): Promise<ColumnEntity[]> {
     return this.columnRepository.find({ where: { userId } });
   }
 
-  async findAll() {
-    return this.columnRepository.find();
-  }
-
-  async updateColumn(id: number, updateColumnDto: UpdateColumnDto) {
+  async updateColumn(id: number, updateColumnDto: UpdateColumnDto): Promise<ColumnEntity> {
     try {
       const column = await this.columnRepository.findOneOrFail(id);
       return this.userRepository.save({ ...column, ...updateColumnDto });
@@ -56,7 +52,7 @@ export class ColumnService {
     }
   }
 
-  async deleteColumn(id: number) {
+  async deleteColumn(id: number): Promise<ColumnEntity> {
     try {
       const column = await this.columnRepository.findOneOrFail(id);
       await this.columnRepository.delete(column);

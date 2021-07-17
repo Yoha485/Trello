@@ -18,8 +18,4 @@ export class ColumnEntity extends AbstractEntity {
 
   @OneToMany((type) => CardEntity, (card) => card.column)
   cards: CardEntity[];
-
-  toJson() {
-    return classToPlain(this);
-  }
 }

@@ -15,6 +15,7 @@ import { User } from 'src/user/user.decorator';
 import { createColumnDto, UpdateColumnDto } from 'src/column/column.dto';
 import { ColumnOwnerGuard } from './column-owner.guard';
 import { ColumnService } from './column.service';
+import { ColumnEntity } from './column.entity';
 
 @UseGuards(AuthGuard())
 @Controller('columns')
@@ -25,18 +26,18 @@ export class ColumnController {
   createColumn(
     @User('id') userId: number,
     @Body(ValidationPipe) createColumnDto: createColumnDto,
-  ) {
+  ): Promise<ColumnEntity> {
     return this.columnService.createColumn(userId, createColumnDto);
   }
 
   @Get()
-  getAllColums(@User('id') userId: number) {
+  getAllColums(@User('id') userId: number): Promise<ColumnEntity[]> {
     return this.columnService.findColumnsByUserId(userId);
   }
 
   @Get(':id')
   @UseGuards(ColumnOwnerGuard)
-  getColumnById(@Param('id') id: number) {
+  getColumnById(@Param('id') id: number): Promise<ColumnEntity> {
     return this.columnService.findColumnById(id);
   }
 
@@ -45,13 +46,13 @@ export class ColumnController {
   updateColumn(
     @Param('id') id: number,
     @Body() updateColumnDto: UpdateColumnDto,
-  ) {
+  ): Promise<ColumnEntity> {
     return this.columnService.updateColumn(id, updateColumnDto);
   }
 
   @Delete(':id')
   @UseGuards(ColumnOwnerGuard)
-  deleteColumn(@Param('id') id: number) {
+  deleteColumn(@Param('id') id: number): Promise<ColumnEntity> {
     return this.columnService.deleteColumn(id);
   }
 }

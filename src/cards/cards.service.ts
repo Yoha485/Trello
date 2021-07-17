@@ -12,7 +12,7 @@ export class CardService {
     private cardRepository: Repository<CardEntity>,
   ) {}
 
-  async createCard(userId: number, createCardDto: CreateCardDto) {
+  async createCard(userId: number, createCardDto: CreateCardDto): Promise<CardEntity> {
     try {
       return await this.cardRepository.save({
         userId,
@@ -23,16 +23,16 @@ export class CardService {
     }
   }
 
-  async findCardsByColumnId(getCardsDto: GetCardsDto) {
+  async findCardsByColumnId(getCardsDto: GetCardsDto): Promise<CardEntity[]> {
     const { columnId } = getCardsDto;
     return this.cardRepository.find({ where: { columnId } });
   }
 
-  async findCardById(id: number) {
+  async findCardById(id: number): Promise<CardEntity> {
     return this.cardRepository.findOne(id);
   }
 
-  async updateCard(id: number, updateCardDto: UpdateCardDto) {
+  async updateCard(id: number, updateCardDto: UpdateCardDto): Promise<CardEntity> {
     try {
       const card = await this.cardRepository.findOneOrFail(id);
       return this.cardRepository.save({ ...card, ...updateCardDto });
@@ -41,7 +41,7 @@ export class CardService {
     }
   }
 
-  async deleteCard(id: number) {
+  async deleteCard(id: number): Promise<CardEntity> {
     try {
       const card = await this.cardRepository.findOneOrFail(id);
       await this.cardRepository.delete(card);

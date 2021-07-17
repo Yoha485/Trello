@@ -1,11 +1,11 @@
-import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { ColumnEntity } from '../column/column.entity';
 import { AbstractEntity } from '../common/abstract-entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 import { CardEntity } from '../cards/card.entity';
 import { CommentEntity } from '../comments/comment.entity';
-import { IsDefined, IsEmail, MinLength } from 'class-validator';
+import { IsEmail, MinLength } from 'class-validator';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -30,12 +30,11 @@ export class UserEntity extends AbstractEntity {
   @OneToMany((type) => CommentEntity, (comment) => comment.user)
   comments: CommentEntity[];
 
-  comparePassword(attempt: string) {
-    console.log('kkek');
+  comparePassword(attempt: string): boolean {
     return bcrypt.compareSync(attempt, this.password);
   }
 
-  toJson() {
+  toJson(): Record<string, any>{
     return classToPlain(this);
   }
 }

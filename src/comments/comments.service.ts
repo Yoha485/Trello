@@ -15,7 +15,10 @@ export class CommentService {
     private commentRepository: Repository<CommentEntity>,
   ) {}
 
-  async createComment(userId: number, createCommentDto: CreateCommentDto) {
+  async createComment(
+    userId: number,
+    createCommentDto: CreateCommentDto,
+  ): Promise<CommentEntity> {
     try {
       return await this.commentRepository.save({
         userId,
@@ -26,16 +29,16 @@ export class CommentService {
     }
   }
 
-  async findCommentById(id: number) {
+  async findCommentById(id: number): Promise<CommentEntity> {
     return this.commentRepository.findOne(id);
   }
 
-  async getCommentsByCardId(getCommentsDto: GetCommentsDto) {
+  async getCommentsByCardId(getCommentsDto: GetCommentsDto): Promise<CommentEntity[]> {
     const { cardId } = getCommentsDto;
     return this.commentRepository.find({ where: { cardId } });
   }
 
-  async updateComment(id: number, updateCommentDto: UpdateCommentDto) {
+  async updateComment(id: number, updateCommentDto: UpdateCommentDto): Promise<CommentEntity> {
     try {
       const comment = await this.commentRepository.findOneOrFail(id);
       return this.commentRepository.save({ ...comment, ...updateCommentDto });
@@ -44,7 +47,7 @@ export class CommentService {
     }
   }
 
-  async deleteComment(id: number) {
+  async deleteComment(id: number): Promise<CommentEntity> {
     try {
       const comment = await this.commentRepository.findOneOrFail(id);
       await this.commentRepository.delete(comment);
