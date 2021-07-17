@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ColumnEntity } from 'src/column/column.entity';
 import { UserEntity } from 'src/user/user.entity';
-import { createColumnDto, UpdateColumnDto } from 'src/column/column.dto';
+import { CreateColumnDto, UpdateColumnDto } from 'src/column/column.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class ColumnService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async createColumn(userId: number, createColumnDto: createColumnDto): Promise<ColumnEntity> {
+  async createColumn(userId: number, createColumnDto: CreateColumnDto): Promise<ColumnEntity> {
     try {
       const column = this.columnRepository.create({
         ...createColumnDto,
@@ -35,7 +35,7 @@ export class ColumnService {
     try {
       return this.columnRepository.findOneOrFail(id);
     } catch (err) {
-      throw new InternalServerErrorException();
+      throw new NotFoundException();
     }
   }
 

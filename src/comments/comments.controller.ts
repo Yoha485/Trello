@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { User } from 'src/user/user.decorator';
 import { CommentOwnerGuard } from './comment-owner.guard';
 import {
@@ -19,12 +20,18 @@ import {
 import { CommentEntity } from './comment.entity';
 import { CommentService } from './comments.service';
 
+@ApiBearerAuth('Token')
+@ApiTags('Comment')
+@ApiUnauthorizedResponse({description: 'Unauthorized'})
 @UseGuards(AuthGuard('jwt'))
 @Controller('comments')
 export class CommentController {
   constructor(private commentService: CommentService) {}
 
   @Post()
+  @ApiCreatedResponse({description: 'Create comment'})
+  @ApiInternalServerErrorResponse({description: 'Cannot create comment'})
+  @ApiBody({type: CreateCommentDto})
   createComment(
     @User('id') userId,
     @Body() createCommentDto: CreateCommentDto,
@@ -34,17 +41,24 @@ export class CommentController {
 
   @Get(':id')
   @UseGuards(CommentOwnerGuard)
+  @ApiOkResponse({description: 'Get comment by id'})
+  @ApiNotFoundResponse({description: 'Comment not Found'})
   getCommentById(@Param('id') id: number): Promise<CommentEntity> {
     return this.commentService.findCommentById(id);
   }
 
   @Get()
+  @ApiOkResponse({description: 'Get all comments in card'})
+  @ApiBody({type: GetCommentsDto})
   getAllComments(@Body() getCommentsDto: GetCommentsDto): Promise<CommentEntity[]> {
     return this.commentService.getCommentsByCardId(getCommentsDto);
   }
 
   @Patch(':id')
   @UseGuards(CommentOwnerGuard)
+  @ApiOkResponse({description: 'Update comment'})
+  @ApiNotFoundResponse({description: 'Comment not found'})
+  @ApiBody({type: UpdateCommentDto})
   updateComment(
     @Param('id') id: number,
     @Body() updateCommentDto: UpdateCommentDto,
@@ -54,6 +68,8 @@ export class CommentController {
 
   @Delete(':id')
   @UseGuards(CommentOwnerGuard)
+  @ApiOkResponse({description: 'Delete comment'})
+  @ApiNotFoundResponse({description: 'Comment not found'})
   deleteComment(@Param('id') id: number): Promise<CommentEntity> {
     return this.commentService.deleteComment(id);
   }

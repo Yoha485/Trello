@@ -12,8 +12,12 @@ export class UserService {
   ) {}
 
   async findById(id: number): Promise<Record<string, any>> {
-    const user = await this.userRepository.findOne(id);
-    return user.toJson();
+    try{
+      const user = await this.userRepository.findOneOrFail(id);
+      return user.toJson();
+    } catch (err) { 
+      throw new NotFoundException();
+    }
   }
 
   async updateUser(id: number, data: UpdateUserDto): Promise<UserEntity> {

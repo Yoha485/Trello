@@ -1,3 +1,4 @@
+import { InternalServerErrorException } from '@nestjs/common';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -25,20 +26,29 @@ export class CommentService {
         ...createCommentDto,
       });
     } catch (err) {
-      throw new NotFoundException('Column Not Found');
+      throw new InternalServerErrorException();
     }
   }
 
   async findCommentById(id: number): Promise<CommentEntity> {
-    return this.commentRepository.findOne(id);
+    try {
+      return this.commentRepository.findOne(id);
+    } catch (err) {
+      throw new NotFoundException();
+    }
   }
 
-  async getCommentsByCardId(getCommentsDto: GetCommentsDto): Promise<CommentEntity[]> {
+  async getCommentsByCardId(
+    getCommentsDto: GetCommentsDto,
+  ): Promise<CommentEntity[]> {
     const { cardId } = getCommentsDto;
     return this.commentRepository.find({ where: { cardId } });
   }
 
-  async updateComment(id: number, updateCommentDto: UpdateCommentDto): Promise<CommentEntity> {
+  async updateComment(
+    id: number,
+    updateCommentDto: UpdateCommentDto,
+  ): Promise<CommentEntity> {
     try {
       const comment = await this.commentRepository.findOneOrFail(id);
       return this.commentRepository.save({ ...comment, ...updateCommentDto });

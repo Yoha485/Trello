@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -19,7 +19,7 @@ export class CardService {
         ...createCardDto,
       });
     } catch (err) {
-      throw new NotFoundException('Column Not Found');
+      throw new InternalServerErrorException('Cannot create card');
     }
   }
 
@@ -29,7 +29,11 @@ export class CardService {
   }
 
   async findCardById(id: number): Promise<CardEntity> {
-    return this.cardRepository.findOne(id);
+    try{
+      return this.cardRepository.findOne(id);
+    } catch(err){
+      throw new NotFoundException();
+    }
   }
 
   async updateCard(id: number, updateCardDto: UpdateCardDto): Promise<CardEntity> {
