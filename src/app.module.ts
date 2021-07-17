@@ -16,7 +16,6 @@ import { CommentsModule } from './comments/comments.module';
     UserModule,
     ColumnModule,
     CardModule,
-    CardModule,
     CommentsModule,
   ],
   controllers: [],

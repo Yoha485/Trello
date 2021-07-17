@@ -21,7 +21,6 @@ export class UserService {
       const user = await this.userRepository.findOneOrFail(id);
       return this.userRepository.save({ ...user, ...data });
     } catch (err) {
-      console.log(err);
       throw new NotFoundException();
     }
   }

@@ -6,12 +6,14 @@ import {
   Body,
   Get,
   Param,
+  Delete,
+  Put,
+  Patch,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/user/user.decorator';
-import { UserEntity } from 'src/user/user.entity';
-import { createColumnDto } from 'src/dto/column.dto';
-import { ColumnAuthGuard } from './column.guard';
+import { createColumnDto, UpdateColumnDto } from 'src/column/column.dto';
+import { ColumnOwnerGuard } from './column-owner.guard';
 import { ColumnService } from './column.service';
 
 @UseGuards(AuthGuard())
@@ -21,15 +23,35 @@ export class ColumnController {
 
   @Post()
   createColumn(
-    @User() user: UserEntity,
+    @User('id') userId: number,
     @Body(ValidationPipe) createColumnDto: createColumnDto,
   ) {
-    return this.columnService.createColumn(user, createColumnDto);
+    return this.columnService.createColumn(userId, createColumnDto);
+  }
+
+  @Get()
+  getAllColums(@User('id') userId: number) {
+    return this.columnService.findColumnsByUserId(userId);
   }
 
   @Get(':id')
-  @UseGuards(ColumnAuthGuard)
-  getColumnById(@Param('id') id: string) {
-    return this.columnService.findById(id);
+  @UseGuards(ColumnOwnerGuard)
+  getColumnById(@Param('id') id: number) {
+    return this.columnService.findColumnById(id);
+  }
+
+  @Patch(':id')
+  @UseGuards(ColumnOwnerGuard)
+  updateColumn(
+    @Param('id') id: number,
+    @Body() updateColumnDto: UpdateColumnDto,
+  ) {
+    return this.columnService.updateColumn(id, updateColumnDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(ColumnOwnerGuard)
+  deleteColumn(@Param('id') id: number) {
+    return this.columnService.deleteColumn(id);
   }
 }

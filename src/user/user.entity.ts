@@ -31,7 +31,8 @@ export class UserEntity extends AbstractEntity {
   comments: CommentEntity[];
 
   comparePassword(attempt: string) {
-    return  bcrypt.compareSync(attempt, this.password);
+    console.log('kkek');
+    return bcrypt.compareSync(attempt, this.password);
   }
 
   toJson() {

@@ -8,13 +8,13 @@ import {
 import { ColumnService } from './column.service';
 
 @Injectable()
-export class ColumnAuthGuard implements CanActivate {
+export class ColumnOwnerGuard implements CanActivate {
   constructor(private readonly columnService: ColumnService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const { user } = request;
-    const column = await this.columnService.findById(request.params.id);
+    const column = await this.columnService.findColumnById(request.params.id);
     if(!column){
       throw new NotFoundException();
     }

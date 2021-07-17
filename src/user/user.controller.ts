@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Patch, UseGuards, ValidationPipe } from '@nestjs/common';
 import { User } from 'src/user/user.decorator';
-import { UserEntity } from 'src/user/user.entity';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateUserDto } from 'src/user/user.dto';
