@@ -33,6 +33,7 @@ export class ColumnController {
     @User('id') userId: number,
     @Body(ValidationPipe) createColumnDto: CreateColumnDto,
   ): Promise<ColumnEntity> {
+    
     return this.columnService.createColumn(userId, createColumnDto);
   }
 

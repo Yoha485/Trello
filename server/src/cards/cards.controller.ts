@@ -43,11 +43,10 @@ export class CardController {
     return this.cardService.findCardById(id);
   }
 
-  @Get()
+  @Get('/column/:columnId')
   @ApiOkResponse({description: 'Get all cards in column'})
-  @ApiBody({type: GetCardsDto})
-  getAllCards(@Body() getCardsDto: GetCardsDto): Promise<CardEntity[]> {
-    return this.cardService.findCardsByColumnId(getCardsDto);
+  getAllCards(@Param('columnId') columnId: number): Promise<CardEntity[]> {
+    return this.cardService.findCardsByColumnId(columnId);
   }
 
   @Patch(':id')

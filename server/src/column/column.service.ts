@@ -52,7 +52,7 @@ export class ColumnService {
   ): Promise<ColumnEntity> {
     try {
       const column = await this.columnRepository.findOneOrFail(id);
-      return this.userRepository.save({ ...column, ...updateColumnDto });
+      return this.columnRepository.save({ ...column, ...updateColumnDto });
     } catch (err) {
       throw new NotFoundException();
     }
@@ -61,7 +61,7 @@ export class ColumnService {
   async deleteColumn(id: number): Promise<ColumnEntity> {
     try {
       const column = await this.columnRepository.findOneOrFail(id);
-      await this.columnRepository.delete(column);
+      await this.columnRepository.delete({ id: column.id });
       return column;
     } catch (err) {
       throw new NotFoundException();

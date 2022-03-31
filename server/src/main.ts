@@ -29,6 +29,12 @@ async function bootstrap(): Promise<void> {
   SwaggerModule.setup('api', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors({
+    origin: '*',
+    methods: '*',
+    credentials: false,
+    allowedHeaders: '*',
+  });
   await app.listen(process.env.PORT || 4000);
 }
 bootstrap();

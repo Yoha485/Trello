@@ -27,8 +27,7 @@ export class CardService {
     }
   }
 
-  async findCardsByColumnId(getCardsDto: GetCardsDto): Promise<CardEntity[]> {
-    const { columnId } = getCardsDto;
+  async findCardsByColumnId(columnId: Number): Promise<CardEntity[]> {
     return this.cardRepository.find({ where: { columnId } });
   }
 
@@ -55,7 +54,7 @@ export class CardService {
   async deleteCard(id: number): Promise<CardEntity> {
     try {
       const card = await this.cardRepository.findOneOrFail(id);
-      await this.cardRepository.delete(card);
+      await this.cardRepository.delete({ id: card.id });
       return card;
     } catch (err) {
       throw new NotFoundException();

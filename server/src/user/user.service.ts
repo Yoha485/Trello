@@ -4,6 +4,7 @@ import { UserEntity } from 'src/user/user.entity';
 import { UpdateUserDto } from 'src/user/user.dto';
 import { Repository } from 'typeorm';
 import { UserRepository } from './user.repository';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -18,10 +19,13 @@ export class UserService {
     }
   }
 
-  async updateUser(id: number, data: UpdateUserDto): Promise<UserEntity> {
+  async updateUser(id: number, data: UpdateUserDto) {
     try {
       const user = await this.userRepository.findOneOrFail(id);
-      return this.userRepository.save({ ...user, ...data });
+      data.password = bcrypt.hashSync(data.password, 10);
+      const res = await this.userRepository.save({ ...user, ...data });
+      const { password, ...resWithoutPassword } = res;
+      return resWithoutPassword;
     } catch (err) {
       throw new NotFoundException();
     }
