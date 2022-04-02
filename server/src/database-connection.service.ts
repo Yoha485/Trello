@@ -7,11 +7,11 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
     return {
       name: 'default',
       type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_DB,
+      host: 'ec2-176-34-211-0.eu-west-1.compute.amazonaws.com',
+      port: 5432,
+      username: 'gikrxderadbokv',
+      password: '12cd870d60a55015e0e64b2743c188ce4437fb7506e752b40c767d12cd79659f',
+      database: 'dac9tndfmn4tmg',
       ssl: {
         rejectUnauthorized: false,
       },
