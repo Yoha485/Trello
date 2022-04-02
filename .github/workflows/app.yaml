@@ -1,0 +1,47 @@
+name: Deploy to heroku.
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: "Yarn install"
+        run: |
+          yarn
+      - name: "Lint"
+        run: |
+          yarn build
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build, Push a Docker container to Heroku.
+        uses: gonuit/heroku-docker-deploy@v1.3.3 #
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          dockerfile_directory: ./
+          dockerfile_name: Dockerfile
+          docker_options: "--no-cache"
+          process_type: web
+          env_file: "./server/.env"
+        env:
+          DATABASE_PORT:${{ secrets.DATABASE_PORT }}
+          DATABASE_USER:${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD:${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_DB:${{ secrets.DATABASE_DB }}
+          DATABASE_HOST:${{ secrets.DATABASE_HOST }}
+          PORT:${{ secrets.PORT }}
+          SECRET:${{ secrets.SECRET }}
